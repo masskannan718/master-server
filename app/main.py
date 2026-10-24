@@ -117,3 +117,21 @@ def update_job(job_id: int, data: UpdateJobStatusRequest):
     conn.commit()
     conn.close()
     return {"job_id": job_id, "updated_status": data.status}
+
+@app.get("/jobs/{job_id}", dependencies=[Depends(verify_admin)])
+def get_job(job_id: int):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, prompt, status, result, created_at, updated_at FROM jobs WHERE id = ?", (job_id,))
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return {
+        "id": row[0],
+        "prompt": row[1],
+        "status": row[2],
+        "result": row[3],
+        "created_at": row[4],
+        "updated_at": row[5]
+    }
