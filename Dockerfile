@@ -13,4 +13,4 @@ RUN mkdir -p data backups logs && chown -R appuser:appuser data backups logs
 
 USER appuser
 EXPOSE 7860
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-7860} --workers 1"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-7860} --workers 1"]
